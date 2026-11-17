@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useDebugValue, useState } from "react";
 import "./App.css";
 
 const AppContext = createContext(null);
 
-function App() {
+export function App() {
     const [theme, setTheme] = useState("light");
 
     return (
@@ -12,19 +12,23 @@ function App() {
         </AppContext.Provider>
     );
 }
+function debuggerHook() {
+    const appContext = useContext(AppContext);
+    useDebugValue(appContext == "panel-light" ? "panel-dark" : "panel-light");
+}
 
 function Form() {
-    const { theme, setTheme } = useContext(AppContext);
-    const nextTheme = theme === "light" ? "dark" : "light";
-
+    const appContext = useContext(AppContext);
+    const id = useId();
+    const id2 = useId();
+    debuggerHook();
     return (
-        <div className={`panel-${theme}`}>
-            <div>Welcome to the form</div>
-            <button className={`button-${theme}`} onClick={() => setTheme(nextTheme)}>
-                Tema {nextTheme} mod
-            </button>
+        <div className={appContext === "panel-light" ? "panel-dark" : "panel-light"}>
+            {" "}
+            {id} {id2}
         </div>
     );
 }
-
-export default App;
+function handleClick() {
+    document.body.classList.toggle("panel-dark");
+}
